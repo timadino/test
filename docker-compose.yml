@@ -1,0 +1,19 @@
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: hackathon_n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - NODE_ENV=production
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - GEMINI_API_KEY=GEM-API-KEY
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./:/files:ro
+    # Авто-импорт перед запуском сервера:
+    command: /bin/sh -c "n8n import:workflow --input=/files/My\\ workflow.json && n8n start"
